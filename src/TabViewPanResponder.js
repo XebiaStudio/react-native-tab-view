@@ -30,6 +30,7 @@ function forHorizontal(props: Props) {
   }
 
   function isMovingHorzontally(evt: GestureEvent, gestureState: GestureState) {
+    console.log('is moving horizontally');
     return (
       (Math.abs(gestureState.dx) > Math.abs(gestureState.dy * 3)) &&
       (Math.abs(gestureState.vx) > Math.abs(gestureState.vy * 3))

@@ -117,6 +117,23 @@ export default class TabBar extends Component<DefaultProps, Props, State> {
     offset: new Animated.Value(0),
   };
 
+  constructor(props: Props) {
+    super(props);
+
+    this._getMaxScrollableDistance = this._getMaxScrollableDistance.bind(this);
+    this._normalizeScrollValue = this._normalizeScrollValue.bind(this);
+    this._getScrollAmount = this._getScrollAmount.bind(this);
+    this._resetScrollOffset = this._resetScrollOffset.bind(this);
+    this._adjustScroll = this._adjustScroll.bind(this);
+    this._adjustOffset = this._adjustOffset.bind(this);
+    this._handleScroll = this._handleScroll.bind(this);
+    this._handleBeginDrag = this._handleBeginDrag.bind(this);
+    this._handleEndDrag = this._handleEndDrag.bind(this);
+    this._handleMomentumScrollBegin = this._handleMomentumScrollBegin.bind(this);
+    this._handleMomentumScrollEnd = this._handleMomentumScrollEnd.bind(this);
+    this._setRef = this._setRef.bind(this);
+  }
+
   componentDidMount() {
     this._adjustScroll(this.props.navigationState.index);
     this._positionListener = this.props.subscribe('position', this._adjustScroll);
@@ -146,19 +163,19 @@ export default class TabBar extends Component<DefaultProps, Props, State> {
     return (layout.width / 5) * 2;
   };
 
-  _getMaxScrollableDistance = (props: Props) => {
+  _getMaxScrollableDistance(props: Props) {
     const tabWidth = this._getTabWidth(props);
     const { layout, navigationState } = props;
     const maxDistance = (tabWidth * navigationState.routes.length) - layout.width;
     return Math.max(maxDistance, 0);
   };
 
-  _normalizeScrollValue = (props: Props, value: number) => {
+  _normalizeScrollValue(props: Props, value: number) {
     const maxDistance = this._getMaxScrollableDistance(props);
     return Math.max(Math.min(value, maxDistance), 0);
   };
 
-  _getScrollAmount = (props: Props, i: number) => {
+  _getScrollAmount(props: Props, i: number) {
     const { layout } = props;
     const tabWidth = this._getTabWidth(props);
     const centerDistance = (tabWidth * i) + (tabWidth / 2);
@@ -166,7 +183,7 @@ export default class TabBar extends Component<DefaultProps, Props, State> {
     return this._normalizeScrollValue(props, scrollAmount);
   };
 
-  _resetScrollOffset = (props: Props) => {
+  _resetScrollOffset(props: Props) {
     if (this._scrollOffset === 0 || !props.scrollEnabled || !this._scrollView) {
       return;
     }
@@ -183,7 +200,7 @@ export default class TabBar extends Component<DefaultProps, Props, State> {
     }).start();
   };
 
-  _adjustScroll = (index: number) => {
+  _adjustScroll(index: number) {
     if (!this.props.scrollEnabled || !this._scrollView) {
       return;
     }
@@ -195,7 +212,7 @@ export default class TabBar extends Component<DefaultProps, Props, State> {
     });
   };
 
-  _adjustOffset = (value: number) => {
+  _adjustOffset(value: number) {
     if (!this._isManualScroll || !this.props.scrollEnabled) {
       return;
     }
@@ -215,17 +232,17 @@ export default class TabBar extends Component<DefaultProps, Props, State> {
     }
   };
 
-  _handleScroll = (e: ScrollEvent) => {
+  _handleScroll(e: ScrollEvent) {
     this._adjustOffset(e.nativeEvent.contentOffset.x);
   };
 
-  _handleBeginDrag = () => {
+  _handleBeginDrag() {
     // onScrollBeginDrag fires when user touches the ScrollView
     this._isManualScroll = true;
     this._isMomentumScroll = false;
   };
 
-  _handleEndDrag = () => {
+  _handleEndDrag() {
     // onScrollEndDrag fires when user lifts his finger
     // onMomentumScrollBegin fires after touch end
     // run the logic in next frame so we get onMomentumScrollBegin first
@@ -237,18 +254,20 @@ export default class TabBar extends Component<DefaultProps, Props, State> {
     });
   };
 
-  _handleMomentumScrollBegin = () => {
+  _handleMomentumScrollBegin() {
     // onMomentumScrollBegin fires on flick, as well as programmatic scroll
     this._isMomentumScroll = true;
   };
 
-  _handleMomentumScrollEnd = () => {
+  _handleMomentumScrollEnd() {
     // onMomentumScrollEnd fires when the scroll finishes
     this._isMomentumScroll = false;
     this._isManualScroll = false;
   };
 
-  _setRef = (el: Object) => (this._scrollView = el);
+  _setRef(el: Object) {
+    this._scrollView = el
+  };
 
   render() {
     const { position, layout, navigationState, scrollEnabled } = this.props;

@@ -59,6 +59,15 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
       },
       position: new Animated.Value(this.props.navigationState.index),
     };
+
+    this._trackPosition = this._trackPosition.bind(this);
+    this._getLastPosition = this._getLastPosition.bind(this);
+    this._handleLayout = this._handleLayout.bind(this);
+    this._buildSceneRendererProps = this._buildSceneRendererProps.bind(this);
+    this._transitionTo = this._transitionTo.bind(this);
+    this._jumpToIndex = this._jumpToIndex.bind(this);
+    this._addSubscription = this._addSubscription.bind(this);
+    this._triggerEvent = this._triggerEvent.bind(this);
   }
 
   state: State;
@@ -88,7 +97,7 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
   _positionListener: string;
   _subscriptions: { [key: SubscriptionName]: Array<Function> } = {};
 
-  _trackPosition = (e: { value: number }) => {
+  _trackPosition(e: { value: number }) {
     this._triggerEvent('position', e.value);
     this._lastPosition = e.value;
     const { onChangePosition } = this.props;
@@ -97,7 +106,7 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
     }
   };
 
-  _getLastPosition = () => {
+  _getLastPosition() {
     if (typeof this._lastPosition === 'number') {
       return this._lastPosition;
     } else {
@@ -105,7 +114,7 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
     }
   };
 
-  _handleLayout = (e: any) => {
+  _handleLayout(e: any) {
     const { height, width } = e.nativeEvent.layout;
 
     if (this.state.layout.width === width && this.state.layout.height === height) {
@@ -121,7 +130,7 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
     });
   };
 
-  _buildSceneRendererProps = (): SceneRendererProps => {
+  _buildSceneRendererProps() {
     return {
       layout: this.state.layout,
       navigationState: this.props.navigationState,
@@ -132,7 +141,7 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
     };
   }
 
-  _transitionTo = (toValue: number, callback: ?Function) => {
+  _transitionTo(toValue: number, callback: ?Function) {
     const lastPosition = this._getLastPosition();
     const currentTransitionProps = {
       progress: lastPosition,
@@ -158,13 +167,13 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
     }
   }
 
-  _jumpToIndex = (index: number) => {
+  _jumpToIndex(index: number) {
     const { canJumpToTab, navigationState } = this.props;
 
     if (canJumpToTab && !canJumpToTab(navigationState.routes[index])) {
       return;
     }
-    
+
     this._triggerEvent('jump', index);
     this._nextIndex = index;
     this._transitionTo(index, () =>
@@ -186,7 +195,7 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
     );
   };
 
-  _addSubscription = (event: SubscriptionName, callback: Function) => {
+  _addSubscription(event: SubscriptionName, callback: Function) {
     if (!this._subscriptions[event]) {
       this._subscriptions[event] = [];
     }
@@ -201,7 +210,7 @@ export default class TabViewTransitioner extends Component<DefaultProps, Props, 
     };
   };
 
-  _triggerEvent = (event: SubscriptionName, value: any) => {
+  _triggerEvent(event: SubscriptionName, value: any) {
     if (this._subscriptions[event]) {
       this._subscriptions[event].forEach(fn => fn(value));
     }

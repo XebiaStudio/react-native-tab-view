@@ -51,6 +51,13 @@ export default class TabViewPagerPan extends Component<DefaultProps, Props, void
     swipeVelocityThreshold: 0.25,
   };
 
+  constructor(props: Props) {
+    super(props);
+
+    this._setPanHandlers = this._setPanHandlers.bind(this);
+    this._callResponderMethod = this._callResponderMethod.bind(this);
+  }
+
   componentWillMount() {
     this._setPanHandlers(this.props);
 
@@ -105,7 +112,7 @@ export default class TabViewPagerPan extends Component<DefaultProps, Props, void
     this._setPanHandlers(nextProps);
   }
 
-  _setPanHandlers = (props: Props) => {
+  _setPanHandlers(props: Props) {
     if (this.props.swipeEnabled === false) {
       this._panHandlers = null;
     } else {
@@ -113,12 +120,15 @@ export default class TabViewPagerPan extends Component<DefaultProps, Props, void
     }
   };
 
-  _callResponderMethod = (methodName: string, returnValue: any) => (...args: Array<any>) => {
-    const panHandlers = this._panHandlers;
-    if (panHandlers && panHandlers[methodName]) {
-      return panHandlers[methodName](...args);
+// _callResponderMethod = (methodName: string, returnValue: any) => (...args: Array<any>) => {
+  _callResponderMethod(methodName: string, returnValue: any) {
+    return function(...args: Array<any>) {
+      const panHandlers = this._panHandlers;
+      if (panHandlers && panHandlers[methodName]) {
+        return panHandlers[methodName](...args);
+      }
+      return returnValue;
     }
-    return returnValue;
   };
 
   _panHandlers: any;

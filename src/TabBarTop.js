@@ -45,11 +45,18 @@ export default class TabBarTop extends Component<void, Props, void> {
     labelStyle: Text.propTypes.style,
   };
 
-  _renderLabel = ({ route }: Scene) => (
-    route.title ? <Text style={[ styles.tablabel, this.props.labelStyle ]}>{route.title.toUpperCase()}</Text> : null
-  );
+  constructor(props: Props) {
+    super(props);
 
-  _renderIndicator = (props: IndicatorProps) => {
+    this._renderLabel = this._renderLabel.bind(this);
+    this._renderIndicator = this._renderIndicator.bind(this);
+  }
+
+  _renderLabel({ route }: Scene) {
+    return route.title ? <Text style={[ styles.tablabel, this.props.labelStyle ]}>{route.title.toUpperCase()}</Text> : null
+  };
+
+  _renderIndicator(props: IndicatorProps) {
     const { width, position } = props;
 
     const translateX = Animated.multiply(position, new Animated.Value(width));

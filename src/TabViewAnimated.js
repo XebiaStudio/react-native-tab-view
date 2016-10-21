@@ -59,6 +59,10 @@ export default class TabViewAnimated extends Component<DefaultProps, Props, Stat
     this.state = {
       loaded: [ this.props.navigationState.index ],
     };
+
+    this._renderScene = this._renderScene.bind(this);
+    this._renderItems = this._renderItems.bind(this);
+    this._handleChangePosition = this._handleChangePosition.bind(this);
   }
 
   state: State;
@@ -71,7 +75,7 @@ export default class TabViewAnimated extends Component<DefaultProps, Props, Stat
     }
   }
 
-  _renderScene = (props: SceneRendererProps & Scene) => {
+  _renderScene(props: SceneRendererProps & Scene) {
     const { renderScene, navigationState, lazy } = this.props;
     const { loaded } = this.state;
     if (lazy) {
@@ -83,7 +87,7 @@ export default class TabViewAnimated extends Component<DefaultProps, Props, Stat
     return renderScene(props);
   };
 
-  _renderItems = (props: SceneRendererProps) => {
+  _renderItems(props: SceneRendererProps) {
     const { renderPager, renderHeader, renderFooter } = this.props;
 
     return (
@@ -110,7 +114,7 @@ export default class TabViewAnimated extends Component<DefaultProps, Props, Stat
     );
   };
 
-  _handleChangePosition = (value: number) => {
+  _handleChangePosition(value: number) {
     const { onChangePosition, navigationState, lazy } = this.props;
     if (onChangePosition) {
       onChangePosition(value);

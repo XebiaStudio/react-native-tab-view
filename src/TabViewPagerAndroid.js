@@ -66,20 +66,20 @@ export default class TabViewPagerAndroid extends Component<void, Props, void> {
   _isIdle: boolean = true;
   _currentIndex: number;
 
-  _setPage = (index: number) => {
+  _setPage(index: number) {
     if (this._viewPager && this._currentIndex !== index) {
       this._currentIndex = index;
       this._viewPager.setPage(index);
     }
   }
 
-  _handleJump = (index: number) => {
+  _handleJump(index: number) {
     if (this._isIdle) {
       this._setPage(index);
     }
   };
 
-  _handlePageScroll = (e: PageScrollEvent) => {
+  _handlePageScroll(e: PageScrollEvent) {
     if (this._isDrag) {
       this.props.position.setValue(
         e.nativeEvent.position + e.nativeEvent.offset
@@ -87,7 +87,7 @@ export default class TabViewPagerAndroid extends Component<void, Props, void> {
     }
   };
 
-  _handlePageScrollStateChanged = (e: PageScrollState) => {
+  _handlePageScrollStateChanged(e: PageScrollState) {
     this._isIdle = e === 'idle';
     if (e === 'dragging') {
       this._isDrag = true;
@@ -99,11 +99,13 @@ export default class TabViewPagerAndroid extends Component<void, Props, void> {
     }
   };
 
-  _handlePageSelected = (e: PageScrollEvent) => {
+  _handlePageSelected(e: PageScrollEvent) {
     this._currentIndex = e.nativeEvent.position;
   };
 
-  _setRef = (el: Object) => (this._viewPager = el);
+  _setRef(el: Object) {
+    this._viewPager = el
+  };
 
   render() {
     return (

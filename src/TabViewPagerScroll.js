@@ -41,6 +41,19 @@ export default class TabViewPagerScroll extends Component<void, Props, void> {
     children: PropTypes.node,
   };
 
+  constructor(props: Props) {
+    super(props);
+
+    this._scrollTo = this._scrollTo.bind(this);
+    this._updatePosition = this._updatePosition.bind(this);
+    this._handleBeginDrag = this._handleBeginDrag.bind(this);
+    this._handleEndDrag = this._handleEndDrag.bind(this);
+    this._handleMomentumScrollBegin = this._handleMomentumScrollBegin.bind(this);
+    this._handleMomentumScrollEnd = this._handleMomentumScrollEnd.bind(this);
+    this._handleScroll = this._handleScroll.bind(this);
+    this._setRef = this._setRef.bind(this);
+  }
+
   componentDidMount() {
     this._positionListener = this.props.subscribe('position', this._updatePosition);
     this._scrollTo(this.props.navigationState.index * this.props.layout.width);
@@ -63,7 +76,7 @@ export default class TabViewPagerScroll extends Component<void, Props, void> {
   _isManualScroll: boolean = false;
   _isMomentumScroll: boolean = false;
 
-  _scrollTo = (x: number) => {
+  _scrollTo(x: number) {
     if (this._scrollView) {
       this._scrollView.scrollTo({
         x,
@@ -72,20 +85,20 @@ export default class TabViewPagerScroll extends Component<void, Props, void> {
     }
   };
 
-  _updatePosition = (value: number) => {
+  _updatePosition(value: number) {
     if (this._isManualScroll || !this._scrollView) {
       return;
     }
     this._scrollTo(value * this.props.layout.width);
   };
 
-  _handleBeginDrag = () => {
+  _handleBeginDrag() {
     // onScrollBeginDrag fires when user touches the ScrollView
     this._isManualScroll = true;
     this._isMomentumScroll = false;
   };
 
-  _handleEndDrag = () => {
+  _handleEndDrag() {
     // onScrollEndDrag fires when user lifts his finger
     // onMomentumScrollBegin fires after touch end
     // run the logic in next frame so we get onMomentumScrollBegin first
@@ -97,12 +110,12 @@ export default class TabViewPagerScroll extends Component<void, Props, void> {
     });
   };
 
-  _handleMomentumScrollBegin = () => {
+  _handleMomentumScrollBegin() {
     // onMomentumScrollBegin fires on flick, as well as programmatic scroll
     this._isMomentumScroll = true;
   };
 
-  _handleMomentumScrollEnd = (e: ScrollEvent) => {
+  _handleMomentumScrollEnd(e: ScrollEvent) {
     // onMomentumScrollEnd fires when the scroll finishes
     this._isMomentumScroll = false;
     this._isManualScroll = false;
@@ -111,7 +124,7 @@ export default class TabViewPagerScroll extends Component<void, Props, void> {
     this.props.jumpToIndex(nextIndex);
   };
 
-  _handleScroll = (e: ScrollEvent) => {
+  _handleScroll(e: ScrollEvent) {
     if (!this._isManualScroll) {
       return;
     }
@@ -120,7 +133,9 @@ export default class TabViewPagerScroll extends Component<void, Props, void> {
     );
   };
 
-  _setRef = (el: Object) => (this._scrollView = el);
+  _setRef(el: Object) {
+    this._scrollView = el
+  };
 
   render() {
     return (
